@@ -1,0 +1,86 @@
+.user-profile-container {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #4a90e2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+}
+
+.avatar-initials {
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.user-email {
+  font-weight: 500;
+  color: white;
+  font-size: 14px;
+}
+
+.logout-btn {
+  background-color: transparent;
+  color: #ffcccc;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  cursor: pointer;
+  transition: color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.logout-btn:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+.logout-icon {
+  font-size: 12px;
+}
+
+.login-link {
+  display: flex;
+  align-items: center;
+}
+
+.login-button {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.login-button:hover {
+  color: #b3d4ff;
+}
+
+.login-icon {
+  font-size: 16px;
+}

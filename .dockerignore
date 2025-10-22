@@ -1,0 +1,12 @@
+node_modules/
+.git/
+.gitignore
+.idea/
+*.iml
+*.swp
+*.swo
+*~
+.DS_Store
+.vscode/
+dist/
+.angular/

@@ -1,0 +1,26 @@
+<header class="bg-blue-600 text-white shadow-lg">
+  <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+    <div class="flex items-center gap-2">
+      <span class="text-2xl">🖨️</span>
+      <h1 class="text-2xl font-bold">Tienda 3D</h1>
+    </div>
+    <div class="flex items-center">
+      <nav class="flex gap-6 items-center mr-6">
+        <a routerLink="/" class="hover:text-blue-200 transition">Inicio</a>
+        <a routerLink="/products" class="hover:text-blue-200 transition">Productos</a>
+        <a routerLink="/cart" class="relative hover:text-blue-200 transition">
+          🛒 Carrito
+          <span *ngIf="cartCount > 0" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+            {{ cartCount }}
+          </span>
+        </a>
+        <a routerLink="/payments" class="hover:text-blue-200 transition" title="Ver mis pagos">
+          💳 Pagos
+        </a>
+      </nav>
+      <div class="border-l border-blue-400 pl-6">
+        <app-user-profile></app-user-profile>
+      </div>
+    </div>
+  </div>
+</header>

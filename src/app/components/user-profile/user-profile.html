@@ -1,0 +1,23 @@
+<div class="user-profile-container">
+  @if (currentUser) {
+    <div class="user-info">
+      <div class="user-avatar">
+        <span class="avatar-initials">{{getInitials(currentUser.email)}}</span>
+      </div>
+      <div class="user-details">
+        <div class="user-email">{{currentUser.email}}</div>
+        <button class="logout-btn" (click)="logout()">
+          <span class="logout-icon">🚪</span>
+          <span>Cerrar Sesión</span>
+        </button>
+      </div>
+    </div>
+  } @else {
+    <div class="login-link">
+      <a [routerLink]="['/login']" class="login-button">
+        <span class="login-icon">🔑</span>
+        <span>Iniciar Sesión</span>
+      </a>
+    </div>
+  }
+</div>

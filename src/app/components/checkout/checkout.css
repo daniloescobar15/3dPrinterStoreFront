@@ -1,0 +1,124 @@
+/* Checkout Component Styles */
+
+:host {
+  display: block;
+}
+
+/* Form Styles */
+form {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+textarea,
+input[type="datetime-local"],
+input[type="text"],
+input[type="email"] {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+textarea:focus,
+input[type="datetime-local"]:focus,
+input[type="text"]:focus,
+input[type="email"]:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Button Styles */
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+button:not(:disabled) {
+  transition: all 0.3s ease;
+}
+
+button:not(:disabled):active {
+  transform: scale(0.98);
+}
+
+/* Reference Display */
+.reference-display {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 2px;
+  word-break: break-all;
+}
+
+/* Alert Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bg-red-100,
+.bg-green-100,
+.bg-yellow-100,
+.bg-blue-50 {
+  animation: slideIn 0.3s ease;
+}
+
+/* Success Checkmark Animation */
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.text-6xl {
+  animation: scaleIn 0.5s ease;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  textarea,
+  input[type="datetime-local"] {
+    font-size: 16px; /* Prevenir zoom en iOS */
+  }
+
+  .text-4xl {
+    font-size: 1.875rem;
+  }
+
+  .grid.grid-cols-2 {
+    gap: 1rem;
+  }
+}
+
+/* Loading State */
+button:disabled {
+  position: relative;
+}
+
+/* Hover Effects */
+button:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Clipboard Copy Animation */
+@keyframes copyFeedback {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+button:has(span:contains("✓ Copiado!")) {
+  animation: copyFeedback 0.3s ease;
+}

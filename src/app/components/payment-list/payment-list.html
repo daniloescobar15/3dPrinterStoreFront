@@ -1,0 +1,235 @@
+<div class="payment-list-container">
+  <div class="payment-header">
+    <h2 class="payment-title">Mis Pagos</h2>
+    <div class="header-actions">
+      <button class="filter-btn" (click)="toggleFilters()" title="Abrir filtros avanzados">
+        <span>🔍</span>
+        <span class="filter-text">Filtros</span>
+      </button>
+      <button class="refresh-btn" (click)="refreshPayments()" [disabled]="isLoading" title="Refrescar pagos">
+        <span class="refresh-icon" [class.spinning]="isLoading">🔄</span>
+        <span class="refresh-text">Refrescar</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-bar-container">
+    <div class="search-bar">
+      <span class="search-icon">🔎</span>
+      <input
+        type="text"
+        [(ngModel)]="searchText"
+        (input)="onSearchChange()"
+        placeholder="Buscar por referencia, descripción o ID de pago..."
+        class="search-input"
+      />
+      <button *ngIf="searchText" (click)="searchText = ''; onSearchChange()" class="clear-search-btn" title="Limpiar búsqueda">
+        ✕
+      </button>
+    </div>
+  </div>
+
+  <!-- Advanced Filters Panel -->
+  <div *ngIf="showFilters" class="filters-panel">
+    <div class="filters-header">
+      <h3 class="filters-title">Filtros Avanzados</h3>
+      <button (click)="toggleFilters()" class="close-filters-btn" title="Cerrar filtros">✕</button>
+    </div>
+
+    <div class="filters-grid">
+      <!-- Estado Filter -->
+      <div class="filter-group">
+        <label class="filter-label">Estado del Pago</label>
+        <select
+          [(ngModel)]="selectedStatus"
+          (change)="onFilterChange()"
+          class="filter-select"
+        >
+          <option [value]="null">Todos los estados</option>
+          <option *ngFor="let status of statusOptions" [value]="status.value">
+            {{ status.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Date Range Filter -->
+      <div class="filter-group">
+        <label class="filter-label">Desde (Fecha)</label>
+        <input
+          type="date"
+          [(ngModel)]="dateFrom"
+          (change)="onFilterChange()"
+          class="filter-input"
+        />
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Hasta (Fecha)</label>
+        <input
+          type="date"
+          [(ngModel)]="dateTo"
+          (change)="onFilterChange()"
+          class="filter-input"
+        />
+      </div>
+
+      <!-- Amount Range Filter -->
+      <div class="filter-group">
+        <label class="filter-label">Monto Mínimo</label>
+        <input
+          type="number"
+          [(ngModel)]="amountFrom"
+          (change)="onFilterChange()"
+          placeholder="0.00"
+          min="0"
+          step="0.01"
+          class="filter-input"
+        />
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Monto Máximo</label>
+        <input
+          type="number"
+          [(ngModel)]="amountTo"
+          (change)="onFilterChange()"
+          placeholder="9999.99"
+          min="0"
+          step="0.01"
+          class="filter-input"
+        />
+      </div>
+    </div>
+
+    <div class="filters-actions">
+      <button (click)="clearFilters()" class="clear-filters-btn">
+        Limpiar Filtros
+      </button>
+    </div>
+
+    <!-- Filter Summary -->
+    <div class="filter-summary">
+      <p class="summary-text">
+        <strong>{{ getFilteredTotal() }}</strong> pago(s) encontrado(s) • 
+        <strong>${{ getFilteredAmount().toFixed(2) }}</strong> en total
+      </p>
+    </div>
+  </div>
+
+  @if (isLoading && payments.length === 0) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Cargando pagos...</p>
+    </div>
+  } @else if (errorMessage) {
+    <div class="error-state">
+      <span class="error-icon">⚠️</span>
+      <p>{{ errorMessage }}</p>
+      <button class="retry-btn" (click)="refreshPayments()">Reintentar</button>
+    </div>
+  } @else if (payments.length === 0) {
+    <div class="empty-state">
+      <span class="empty-icon">💳</span>
+      <p>No tienes pagos registrados</p>
+    </div>
+  } @else if (filteredPayments.length === 0) {
+    <div class="empty-state">
+      <span class="empty-icon">🔍</span>
+      <p>No se encontraron pagos que coincidan con los filtros</p>
+      <button (click)="clearFilters()" class="retry-btn">Limpiar Filtros</button>
+    </div>
+  } @else {
+    <div class="payments-table-wrapper">
+      <table class="payments-table">
+        <thead>
+          <tr>
+            <th class="col-status">Estado</th>
+            <th class="col-id">ID Pago</th>
+            <th class="col-amount">Monto</th>
+            <th class="col-description">Descripción</th>
+            <th class="col-reference">Referencia</th>
+            <th class="col-date">Fecha Creación</th>
+            <th class="col-message">Mensaje</th>
+            <th class="col-actions">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (payment of filteredPayments; track payment.id) {
+            <tr class="payment-row" [class]="'status-' + payment.status">
+              <td class="col-status">
+                <div class="status-badge" [class]="'badge-' + getStatusColor(payment.status)">
+                  <span class="status-icon">{{ getStatusIcon(payment.status) }}</span>
+                  <span class="status-label">{{ getStatusLabel(payment.status) }}</span>
+                </div>
+              </td>
+              <td class="col-id">
+                <code class="payment-id">{{ payment.paymentId }}</code>
+              </td>
+              <td class="col-amount">
+                <span class="amount">{{ payment.amount | currency: 'USD' }}</span>
+              </td>
+              <td class="col-description">
+                <span 
+                  class="description" 
+                  [matTooltip]="payment.description || 'Sin descripción'"
+                  matTooltipPosition="above"
+                  [matTooltipDisabled]="!payment.description">
+                  {{ payment.description || 'Sin descripción' }}
+                </span>
+              </td>
+              <td class="col-reference">
+                <code class="reference">{{ payment.reference }}</code>
+              </td>
+              <td class="col-date">
+                <span class="date">{{ formatDate(payment.createdAt) }}</span>
+              </td>
+              <td class="col-message">
+                <span class="message" [title]="payment.responseMessage">
+                  {{ payment.responseMessage }}
+                </span>
+              </td>
+              <td class="col-actions">
+                <div class="actions-group">
+                  <button
+                    class="download-btn"
+                    (click)="downloadVoucher(payment)"
+                    title="Descargar comprobante en PDF"
+                    [attr.aria-label]="'Descargar comprobante del pago ' + payment.paymentId"
+                  >
+                    <span class="btn-icon">📥</span>
+                    <span class="btn-text">PDF</span>
+                  </button>
+                  <button
+                    class="cancel-btn"
+                    (click)="openCancelDialog(payment)"
+                    [disabled]="!canCancelPayment(payment) || cancelingPaymentId === payment.paymentId"
+                    [title]="canCancelPayment(payment) ? 'Cancelar este pago' : 'Solo se pueden cancelar pagos creados o pagados'"
+                    [attr.aria-label]="'Cancelar pago ' + payment.paymentId"
+                  >
+                    @if (cancelingPaymentId === payment.paymentId) {
+                      <span class="spinner">⏳</span>
+                      <span class="text">Cancelando...</span>
+                    } @else {
+                      <span class="text">Cancelar</span>
+                    }
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="payment-footer">
+      <p class="payment-info">
+        Mostrando {{ filteredPayments.length }} de {{ payments.length }} pago(s)
+        @if (filteredPayments.length > 0) {
+          • Total filtrado: <strong>${{ getFilteredAmount().toFixed(2) }}</strong>
+        }
+        | Actualizando cada 5 segundos
+      </p>
+    </div>
+  }
+</div>

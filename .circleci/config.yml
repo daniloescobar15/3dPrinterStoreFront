@@ -1,0 +1,137 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+version: 2.1
+
+# Define jobs for the frontend pipeline
+jobs:
+  build-and-test:
+    machine:
+      image: ubuntu-2404:2024.05.1
+    resource_class: medium
+    steps:
+      - checkout
+
+      - run:
+          name: "Install Node.js 22"
+          command: |
+            curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+            node --version
+            npm --version
+
+      - run:
+          name: "Update PATH and verify Node.js version"
+          command: |
+            export PATH=/usr/bin:$PATH
+            node --version
+            npm --version
+            which node
+
+      - run:
+          name: "Install dependencies"
+          command: |
+            export PATH=/usr/bin:$PATH
+            npm ci
+
+      - run:
+          name: "Build Angular application"
+          command: |
+            export PATH=/usr/bin:$PATH
+            npm run build
+
+      - run:
+          name: "Run Unit Tests"
+          command: |
+            export PATH=/usr/bin:$PATH
+            npm test -- --watch=false --browsers=ChromeHeadless
+
+      - store_test_results:
+          path: coverage
+
+      - store_artifacts:
+          path: dist/3dprinterStore/browser
+          destination: build
+
+  build-docker-image:
+    machine:
+      image: ubuntu-2404:2024.05.1
+    resource_class: medium
+    steps:
+      - checkout
+
+      - run:
+          name: "Build Docker Image"
+          command: |
+            docker build -t 3dprinterStore:${CIRCLE_SHA1:0:7} .
+            docker tag 3dprinterStore:${CIRCLE_SHA1:0:7} 3dprinterStore:latest
+
+      - run:
+          name: "Test Docker Image"
+          command: |
+            docker run -d -p 8081:80 --name test-app 3dprinterStore:latest
+            sleep 5
+            curl -f http://localhost:8081/health || exit 1
+            docker stop test-app || true
+
+  deploy-to-production:
+    machine:
+      image: ubuntu-2404:2024.05.1
+    resource_class: medium
+    steps:
+      - checkout
+
+      - run:
+          name: "Install sshpass"
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y sshpass
+
+      - run:
+          name: "Build and Deploy Docker Image"
+          command: |
+            # Build Docker image
+            docker build -t 3dprinterStore:${CIRCLE_SHA1:0:7} .
+
+            # Save image to tar
+            docker save 3dprinterStore:${CIRCLE_SHA1:0:7} -o /tmp/3dprinterStore.tar
+
+            # Transfer to server using sshpass
+            sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no \
+                -P 22 \
+                /tmp/3dprinterStore.tar \
+                root@158.220.99.85:/tmp/
+
+            # Deploy on server using sshpass
+            export IMAGE_TAG=${CIRCLE_SHA1:0:7}
+            sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no \
+                -p 22 \
+                root@158.220.99.85 bash -c "
+            docker load -i /tmp/3dprinterStore.tar
+            docker stop 3dprinterStore || true
+            docker rm 3dprinterStore || true
+            docker run -d \
+              --name 3dprinterStore \
+              -p 80:80 \
+              --restart unless-stopped \
+              3dprinterStore:${IMAGE_TAG}
+            sleep 5
+            curl -f http://localhost:80/health || exit 1
+            echo 'Deployment successful!'
+            "
+
+# Orchestrate jobs using workflows
+workflows:
+  build-and-deploy:
+    jobs:
+      - build-and-test
+      - build-docker-image:
+          requires:
+            - build-and-test
+      - deploy-to-production:
+          requires:
+            - build-docker-image
+          filters:
+            branches:
+              only:
+                - main
+                - master
+                - develop

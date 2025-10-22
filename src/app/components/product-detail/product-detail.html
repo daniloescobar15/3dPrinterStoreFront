@@ -1,0 +1,40 @@
+<div class="bg-gray-100 py-8 min-h-screen">
+  <div class="max-w-4xl mx-auto px-4">
+    <a routerLink="/products" class="text-blue-600 hover:underline mb-4 inline-block">← Volver a Productos</a>
+
+    <div *ngIf="!product" class="text-center py-12">
+      <p class="text-lg text-gray-600">Producto no encontrado</p>
+    </div>
+
+    <div *ngIf="product" class="bg-white rounded-lg shadow-lg overflow-hidden">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
+        <div class="aspect-square bg-gray-300 flex items-center justify-center rounded-lg">
+          <img [src]="product.image" [alt]="product.name" class="w-full h-full object-cover rounded-lg">
+        </div>
+        <div class="flex flex-col justify-center">
+          <h1 class="text-4xl font-bold text-gray-800 mb-4">{{ product.name }}</h1>
+          <p class="text-gray-600 text-lg mb-6">{{ product.description }}</p>
+          <p class="text-4xl font-bold text-blue-600 mb-6">${{ product.price }}</p>
+
+          <div class="mb-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-3">Especificaciones:</h3>
+            <ul class="space-y-2">
+              <li *ngFor="let spec of product.specs" class="text-gray-700">
+                <span class="font-semibold">•</span> {{ spec }}
+              </li>
+            </ul>
+          </div>
+
+          <div class="flex items-center gap-4 mb-6">
+            <label class="text-gray-800 font-semibold">Cantidad:</label>
+            <input type="number" [(ngModel)]="quantity" min="1" class="w-16 border border-gray-300 rounded px-2 py-1">
+          </div>
+
+          <button (click)="addToCart()" class="w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition font-semibold text-lg">
+            Agregar al Carrito
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

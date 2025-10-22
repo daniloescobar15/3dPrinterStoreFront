@@ -1,0 +1,33 @@
+<div class="bg-gray-100 py-8">
+  <div class="max-w-7xl mx-auto px-4">
+    <h2 class="text-3xl font-bold mb-8 text-gray-800">Colección de Impresoras 3D</h2>
+    
+    <div *ngIf="loading" class="text-center py-12">
+      <p class="text-lg text-gray-600">Cargando productos...</p>
+    </div>
+
+    <div *ngIf="!loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div *ngFor="let product of products" class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition">
+        <div class="aspect-square bg-gray-300 flex items-center justify-center">
+          <img [src]="product.image" [alt]="product.name" class="w-full h-full object-cover">
+        </div>
+        <div class="p-4">
+          <h3 class="text-xl font-bold text-gray-800 mb-2">{{ product.name }}</h3>
+          <p class="text-gray-600 text-sm mb-3">{{ product.description }}</p>
+          <p class="text-2xl font-bold text-blue-600 mb-4">${{ product.price }}</p>
+          <ul class="text-xs text-gray-600 mb-4 space-y-1">
+            <li *ngFor="let spec of product.specs">• {{ spec }}</li>
+          </ul>
+          <div class="flex gap-2">
+            <a [routerLink]="['/product', product.id]" class="flex-1 bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition text-center">
+              Ver Detalles
+            </a>
+            <button (click)="addToCart(product)" class="flex-1 bg-green-500 text-white py-2 rounded hover:bg-green-600 transition">
+              Agregar al Carrito
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

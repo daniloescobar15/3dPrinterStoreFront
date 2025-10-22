@@ -1,0 +1,96 @@
+<div class="login-container">
+  <div class="login-card">
+    <h2 class="login-title">Iniciar Sesión</h2>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="username">Correo Electrónico</label>
+        <input 
+          type="email" 
+          id="username" 
+          formControlName="username" 
+          class="form-control" 
+          [ngClass]="{ 'is-invalid': submitted && f['username'].errors }"
+        />
+        @if (submitted && f['username'].errors) {
+          <div class="invalid-feedback">
+            @if (f['username'].errors['required']) {
+              <div>El correo electrónico es requerido</div>
+            }
+            @if (f['username'].errors['email']) {
+              <div>Ingrese un correo electrónico válido</div>
+            }
+          </div>
+        }
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input 
+          type="password" 
+          id="password" 
+          formControlName="password" 
+          class="form-control" 
+          [ngClass]="{ 'is-invalid': submitted && f['password'].errors }"
+        />
+        @if (submitted && f['password'].errors) {
+          <div class="invalid-feedback">
+            @if (f['password'].errors['required']) {
+              <div>La contraseña es requerida</div>
+            }
+          </div>
+        }
+      </div>
+      
+      <div class="form-group">
+        <button [disabled]="loading" class="btn-login">
+          @if (loading) {
+            <span class="spinner"></span>
+          }
+          Iniciar Sesión
+        </button>
+      </div>
+      
+      @if (error) {
+        <div class="alert-error">
+          {{error}}
+        </div>
+      }
+    </form>
+    
+    <!-- Opciones de depuración -->
+    <div class="debug-options" *ngIf="showDebugOptions">
+      <h4>Opciones de depuración</h4>
+      
+      <div class="form-check">
+        <input type="checkbox" id="useProxy" [checked]="useProxy" (change)="toggleProxy()" class="form-check-input">
+        <label for="useProxy" class="form-check-label">
+          <strong>Usar proxy para API</strong>
+          <small class="text-muted d-block">Recomendado para evitar problemas de CORS</small>
+        </label>
+      </div>
+      
+      <div class="api-url alert alert-info mt-2">
+        <strong>URL actual:</strong> {{currentApiUrl}}
+      </div>
+      
+      <div class="debug-actions mt-3">
+        <button (click)="testApiConnection()" class="btn-sm btn-secondary" [disabled]="loading">
+          <span *ngIf="loading" class="spinner-sm"></span>
+          Probar conexión
+        </button>
+      </div>
+      
+      <div class="cors-info mt-3">
+        <h5>¿Problemas de conexión?</h5>
+        <p>Si experimentas errores de conexión, es posible que sea un problema de CORS. Intenta activar la opción "Usar proxy para API" para resolver el problema.</p>
+      </div>
+    </div>
+    
+    <div class="debug-toggle">
+      <button (click)="toggleDebugOptions()" class="btn-sm btn-link">
+        {{ showDebugOptions ? 'Ocultar opciones de depuración' : 'Mostrar opciones de depuración' }}
+      </button>
+    </div>
+  </div>
+</div>
