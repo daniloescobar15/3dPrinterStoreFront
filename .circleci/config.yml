@@ -61,13 +61,13 @@ jobs:
       - run:
           name: "Build Docker Image"
           command: |
-            docker build -t 3dprinterStore:${CIRCLE_SHA1:0:7} .
-            docker tag 3dprinterStore:${CIRCLE_SHA1:0:7} 3dprinterStore:latest
+            docker build -t 3dprinterstore:${CIRCLE_SHA1:0:7} .
+            docker tag 3dprinterstore:${CIRCLE_SHA1:0:7} 3dprinterstore:latest
 
       - run:
           name: "Test Docker Image"
           command: |
-            docker run -d -p 8081:80 --name test-app 3dprinterStore:latest
+            docker run -d -p 8081:80 --name test-app 3dprinterstore:latest
             sleep 5
             curl -f http://localhost:8081/health || exit 1
             docker stop test-app || true
@@ -89,15 +89,15 @@ jobs:
           name: "Build and Deploy Docker Image"
           command: |
             # Build Docker image
-            docker build -t 3dprinterStore:${CIRCLE_SHA1:0:7} .
+            docker build -t 3dprinterstore:${CIRCLE_SHA1:0:7} .
 
             # Save image to tar
-            docker save 3dprinterStore:${CIRCLE_SHA1:0:7} -o /tmp/3dprinterStore.tar
+            docker save 3dprinterstore:${CIRCLE_SHA1:0:7} -o /tmp/3dprinterstore.tar
 
             # Transfer to server using sshpass
             sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no \
                 -P 22 \
-                /tmp/3dprinterStore.tar \
+                /tmp/3dprinterstore.tar \
                 root@158.220.99.85:/tmp/
 
             # Deploy on server using sshpass
@@ -105,14 +105,14 @@ jobs:
             sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no \
                 -p 22 \
                 root@158.220.99.85 bash -c "
-            docker load -i /tmp/3dprinterStore.tar
-            docker stop 3dprinterStore || true
-            docker rm 3dprinterStore || true
+            docker load -i /tmp/3dprinterstore.tar
+            docker stop 3dprinterstore || true
+            docker rm 3dprinterstore || true
             docker run -d \
-              --name 3dprinterStore \
+              --name 3dprinterstore \
               -p 80:80 \
               --restart unless-stopped \
-              3dprinterStore:${IMAGE_TAG}
+              3dprinterstore:${IMAGE_TAG}
             sleep 5
             curl -f http://localhost:80/health || exit 1
             echo 'Deployment successful!'
