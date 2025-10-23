@@ -30,8 +30,7 @@ graph TB
     FusionAuth["🔐 FUSIONAUTH SERVER<br/><b>Autenticación</b><br/>OAuth 2.0 / OIDC<br/>JWT Tokens<br/>User Management"]
     
     subgraph PuntoRed["📊 SISTEMA PUNTO RED"]
-        Integration["<b>Integration API</b><br/>]
-        
+        Integration["<b>Integration API</b>"]
     end
     
     Frontend -->|HTTP/REST Calls<br/>with JWT| BackendServer
@@ -40,7 +39,6 @@ graph TB
     BackendServer --> Database
     BackendServer -->|OAuth 2.0<br/>Token Verification| FusionAuth
     BackendServer -->|Integration API| Integration
-    BackendServer -->|Data Queries| PuntoRedDB
     
     style Cliente fill:#0288d1,stroke:#01579b,stroke-width:2px,color:#fff
     style Frontend fill:#0097a7,stroke:#006064,stroke-width:2px,color:#fff
@@ -54,7 +52,6 @@ graph TB
     style FusionAuth fill:#7b1fa2,stroke:#4a148c,stroke-width:2px,color:#fff
     style PuntoRed fill:#388e3c,stroke:#1b5e20,stroke-width:2px,color:#fff
     style Integration fill:#43a047,stroke:#2e7d32,stroke-width:2px,color:#fff
-    style PuntoRedDB fill:#43a047,stroke:#2e7d32,stroke-width:2px,color:#fff
 ```
 
 ### Flujo de Autenticación
