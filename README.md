@@ -42,19 +42,19 @@ graph TB
     BackendServer -->|Integration API| Integration
     BackendServer -->|Data Queries| PuntoRedDB
     
-    style Cliente fill:#e1f5ff
-    style Frontend fill:#b3e5fc
-    style Components fill:#81d4fa
-    style Services fill:#81d4fa
-    style Backend fill:#fff3e0
-    style BackendServer fill:#ffe0b2
-    style API fill:#ffcc80
-    style Controllers fill:#ffcc80
-    style Database fill:#ffb74d
-    style FusionAuth fill:#f3e5f5
-    style PuntoRed fill:#e8f5e9
-    style Integration fill:#c8e6c9
-    style PuntoRedDB fill:#c8e6c9
+    style Cliente fill:#0288d1,stroke:#01579b,stroke-width:2px,color:#fff
+    style Frontend fill:#0097a7,stroke:#006064,stroke-width:2px,color:#fff
+    style Components fill:#00838f,stroke:#004d5c,stroke-width:2px,color:#fff
+    style Services fill:#00838f,stroke:#004d5c,stroke-width:2px,color:#fff
+    style Backend fill:#f57c00,stroke:#e65100,stroke-width:2px,color:#fff
+    style BackendServer fill:#ff8f00,stroke:#e65100,stroke-width:2px,color:#fff
+    style API fill:#ffa726,stroke:#f57c00,stroke-width:2px,color:#fff
+    style Controllers fill:#ffa726,stroke:#f57c00,stroke-width:2px,color:#fff
+    style Database fill:#ff6f00,stroke:#e65100,stroke-width:2px,color:#fff
+    style FusionAuth fill:#7b1fa2,stroke:#4a148c,stroke-width:2px,color:#fff
+    style PuntoRed fill:#388e3c,stroke:#1b5e20,stroke-width:2px,color:#fff
+    style Integration fill:#43a047,stroke:#2e7d32,stroke-width:2px,color:#fff
+    style PuntoRedDB fill:#43a047,stroke:#2e7d32,stroke-width:2px,color:#fff
 ```
 
 ### Flujo de Autenticación
