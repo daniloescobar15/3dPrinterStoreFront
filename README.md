@@ -29,7 +29,9 @@ graph TB
     
     FusionAuth["🔐 FUSIONAUTH SERVER<br/><b>Autenticación</b><br/>OAuth 2.0 / OIDC<br/>JWT Tokens<br/>User Management"]
     
-    subgraph PuntoRed["📊 SISTEMA PUNTO RED"]        
+    subgraph PuntoRed["📊 SISTEMA PUNTO RED"]
+        Integration["<b>Integration API</b><br/>]
+        
     end
     
     Frontend -->|HTTP/REST Calls<br/>with JWT| BackendServer
