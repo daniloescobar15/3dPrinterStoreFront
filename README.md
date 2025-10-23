@@ -22,8 +22,8 @@ graph TB
     
     subgraph Backend["🗄️ Backend"]
         BackendServer["<b>3D PRINTER STORE - BACKEND</b><br/>(3dprinterstoreback)"]
-        API["<b>API REST Endpoints</b><br/>/api/products • /api/cart<br/>/api/checkout • /api/payments<br/>/api/users • /api/auth/verify"]
-        Controllers["<b>Controllers & Business Logic</b><br/>ProductController • OrderController<br/>PaymentController • AuthController"]
+        API["<b>API REST Endpoints</b><br/>/api/auth/login • /api/products<br/>/api/cart • /api/checkout<br/>/api/payments • /api/users"]
+        Controllers["<b>Controllers & Business Logic</b><br/>AuthController • ProductController<br/>OrderController • PaymentController"]
         Database["<b>Database</b><br/>Products • Orders<br/>Users • Payments"]
     end
     
@@ -34,12 +34,11 @@ graph TB
         PuntoRedDB["<b>Base de Datos Punto Red</b><br/>Históricos • Configuración"]
     end
     
-    Frontend -->|HTTP/REST Calls<br/>with Tokens| BackendServer
-    Frontend -->|OAuth 2.0<br/>OIDC| FusionAuth
+    Frontend -->|HTTP/REST Calls<br/>with JWT| BackendServer
     BackendServer --> API
     BackendServer --> Controllers
     BackendServer --> Database
-    BackendServer -->|Token Verification| FusionAuth
+    BackendServer -->|OAuth 2.0<br/>Token Verification| FusionAuth
     BackendServer -->|Integration API| Integration
     BackendServer -->|Data Queries| PuntoRedDB
     
@@ -64,21 +63,22 @@ graph TB
 sequenceDiagram
     actor User as Usuario
     participant Frontend as Frontend<br/>(Angular 20)
-    participant FusionAuth as FusionAuth<br/>Server
     participant Backend as Backend<br/>(3dprinterstoreback)
+    participant FusionAuth as FusionAuth<br/>Server
     
     User->>Frontend: 1. Ingresa credenciales
-    Frontend->>FusionAuth: 2. Envía credenciales<br/>(OAuth 2.0)
-    FusionAuth->>FusionAuth: Valida usuario
-    FusionAuth->>Frontend: 3. Retorna JWT Token
-    Frontend->>Frontend: 4. Almacena token<br/>(localStorage)
-    Frontend->>Frontend: 5. AuthInterceptor inyecta<br/>token en headers
-    Frontend->>Backend: 6. HTTP Request<br/>+ Authorization Header
-    Backend->>FusionAuth: 7. Verifica token
-    FusionAuth->>Backend: 8. Token válido ✓
-    Backend->>Backend: 9. Procesa lógica
-    Backend->>Frontend: 10. Retorna datos protegidos
-    Frontend->>User: 11. Actualiza UI
+    Frontend->>Backend: 2. POST /api/auth/login<br/>(credenciales)
+    Backend->>FusionAuth: 3. Envía credenciales<br/>(OAuth 2.0)
+    FusionAuth->>FusionAuth: 4. Valida usuario
+    FusionAuth->>Backend: 5. Retorna JWT Token
+    Backend->>Backend: 6. Procesa autenticación
+    Backend->>Frontend: 7. Retorna JWT Token
+    Frontend->>Frontend: 8. Almacena token<br/>(localStorage)
+    Frontend->>Frontend: 9. AuthInterceptor inyecta<br/>token en headers
+    Frontend->>Backend: 10. HTTP Request<br/>+ Authorization Header
+    Backend->>Backend: 11. Valida token
+    Backend->>Frontend: 12. Retorna datos protegidos
+    Frontend->>User: 13. Actualiza UI
 ```
 
 ## 📋 Tabla de Contenidos
