@@ -24,7 +24,7 @@ graph TB
         BackendServer["<b>3D PRINTER STORE - BACKEND</b><br/>(3dprinterstoreback)"]
         API["<b>API REST Endpoints</b><br/>/api/auth/login • /api/products<br/>/api/cart • /api/checkout<br/>/api/payments • /api/users"]
         Controllers["<b>Controllers & Business Logic</b><br/>AuthController • ProductController<br/>OrderController • PaymentController"]
-        Database["<b>Database</b><br/>Products • Orders<br/>Users • Payments"]
+        Database["<b>Mysql</b><br/>"]
     end
     
     FusionAuth["🔐 FUSIONAUTH SERVER<br/><b>Autenticación</b><br/>OAuth 2.0 / OIDC<br/>JWT Tokens<br/>User Management"]
@@ -363,6 +363,3 @@ Tema personalizado en `src/custom-theme.scss`
 - Seguir convenciones de Angular
 - Incluir tests para nuevas funcionalidades
 - Documentar cambios significativos
-
-## 📝 Configuración de Prettier
-
