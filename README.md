@@ -99,7 +99,7 @@ sequenceDiagram
 - **🔐 Autenticación**: Login seguro con guardias de ruta
 - **💳 Sistema de Pagos**: Integración con procesamiento de pagos
 - **👤 Perfil de Usuario**: Gestión de datos de usuario
-- **📄 Facturación**: Generación de facturas en PDF usando jsPDF
+- **📄 Generacion voucher de pago**: Generación de facturas en PDF usando jsPDF
 - **🎨 Diseño Responsivo**: Totalmente adaptable a dispositivos móviles
 - **🌐 Temas Personalizados**: Temas Material Design personalizables
 
@@ -160,7 +160,7 @@ cp .env.example .env  # Ajusta según tus necesidades
 
 **Con proxy configurado (recomendado):**
 ```bash
-npm start
+ng serve --proxy-config proxy.conf.json
 ```
 La aplicación estará disponible en `http://localhost:4200/`
 
@@ -249,9 +249,8 @@ src/
 
 | Servicio | Propósito | Protocolo |
 |----------|-----------|-----------|
-| **3dprinterstoreback** | Backend principal, lógica de negocio | REST API (HTTP/HTTPS) |
-| **FusionAuth** | Autenticación y gestión de usuarios | OAuth 2.0 / OIDC |
-| **Sistema Punto Red** | Integración de facturación e inventario | REST API / BD |
+| **3dprinterstoreback** | Backend principal, lógica de negocio | REST API (HTTP/HTTPS) el cual se integra con FusionAuth |
+| ***FusionAuth*** | Autenticación y gestión de usuarios | OAuth 2.0 / OIDC |
 
 ### Gestión de Estado
 
